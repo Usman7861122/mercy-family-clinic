@@ -299,3 +299,6 @@
   .legal td:first-child { white-space: normal; }
 }
 .legal > section + section { margin-top: 3rem; }
+
+/* Handwriting heading: hide the plain-text placeholder until the pen font is ready (only when JavaScript runs) */
+.js .hw-pending { opacity: 0; }

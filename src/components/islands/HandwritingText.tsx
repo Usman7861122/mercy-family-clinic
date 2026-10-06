@@ -72,10 +72,12 @@ function loadFont(url: string): Promise<any> {
 
 const EM = 100; // arbitrary: the viewBox normalises whatever we pick
 
+const FADE_MS = 1400;
+
 export default function HandwritingText({
   text,
   words,
-  interval = 4200,
+  interval = 6000,
   fontUrl = DEFAULT_FONT_URL,
   duration = 1.5,
   delay = 0.05,
@@ -90,9 +92,12 @@ export default function HandwritingText({
   const current = list[index % list.length];
 
   const [reduce, setReduce] = useState(false);
+  const [failed, setFailed] = useState(false);
   const [font, setFont] = useState<any>(null);
   const [geom, setGeom] = useState<Geometry | null>(null);
   const [drawn, setDrawn] = useState(false);
+  const [leaving, setLeaving] = useState(false);
+  const firstRun = useRef(true);
   const [lengths, setLengths] = useState<number[]>([]);
   const pathRefs = useRef<(SVGPathElement | null)[]>([]);
 
@@ -102,8 +107,23 @@ export default function HandwritingText({
 
   useEffect(() => {
     if (!cycle || reduce) return undefined;
-    const id = setInterval(() => setIndex((i) => i + 1), interval);
-    return () => clearInterval(id);
+    // Hold the finished word, fade it out slowly, then write the next one.
+    const hold = Math.max(500, interval - FADE_MS);
+    let t1: ReturnType<typeof setTimeout>;
+    let t2: ReturnType<typeof setTimeout>;
+    const run = () => {
+      t1 = setTimeout(() => {
+        setLeaving(true);
+        t2 = setTimeout(() => {
+          setLeaving(false);
+          setIndex((i) => i + 1);
+          run();
+        }, FADE_MS);
+      }, hold + (firstRun.current ? 1500 : 0));
+      firstRun.current = false;
+    };
+    run();
+    return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [cycle, interval, reduce]);
 
   useEffect(() => {
@@ -111,7 +131,7 @@ export default function HandwritingText({
     let cancelled = false;
     loadFont(fontUrl)
       .then((f) => { if (!cancelled) setFont(f); })
-      .catch(() => { /* falls back to plain text below */ });
+      .catch(() => setFailed(true)); // falls back to plain text below
     return () => { cancelled = true; };
   }, [fontUrl, reduce]);
 
@@ -160,7 +180,10 @@ export default function HandwritingText({
 
   // Before the font resolves, if it never does, or with "reduce motion": plain readable text.
   if (reduce || !geom) {
-    return <span className={className}>{reduce ? list[0] : current}</span>;
+    // While the font loads (JavaScript on), the plain text stays invisible so there is no flash of the wrong font.
+    // If the font fails, or with "reduce motion", it shows as normal text.
+    const waiting = !reduce && !failed;
+    return <span className={[className, waiting ? "hw-pending" : ""].filter(Boolean).join(" ")}>{reduce ? list[0] : current}</span>;
   }
 
   const count = Math.max(1, geom.contours.length);
@@ -176,6 +199,8 @@ export default function HandwritingText({
         height,
         width: `calc(${height} * ${(geom.w / geom.h).toFixed(4)})`,
         overflow: "visible",
+        opacity: leaving ? 0 : 1,
+        transition: leaving ? `opacity ${FADE_MS}ms ease-in-out` : "none",
       }}
     >
       {fill && (

@@ -1,5 +1,6 @@
 ---
 import Icon from "../Icon.astro";
+import HandwritingText from "../islands/HandwritingText";
 import { site, images, unsplash } from "../../lib/site";
 ---
 
@@ -23,7 +24,16 @@ import { site, images, unsplash } from "../../lib/site";
         Family Medicine · Medical Weight Loss · Dallas, TX
       </p>
       <h1 class="rise mt-6 text-balance text-[2.5rem] font-semibold leading-[1.06] !text-white sm:text-6xl lg:text-[4.25rem]" style="animation-delay: 0.3s">
-        Caring for your whole family, <span class="text-gold">for life.</span>
+        Caring for your{" "}
+        <span class="sm:whitespace-nowrap">whole family,{" "}<span class="inline-block h-[1.06em] align-top text-gold">
+          <HandwritingText
+            client:load
+            words={["for life.", "with heart.", "every day."]}
+            height="1.7em"
+            delay={0.9}
+            className="text-gold"
+          />
+        </span></span>
       </h1>
       <p class="rise mt-6 max-w-lg text-lg text-white/85 sm:text-xl" style="animation-delay: 0.45s">
         Warm, thorough primary care from Dr. Izzy and our team, for patients of every age.
