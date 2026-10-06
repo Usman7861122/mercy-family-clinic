@@ -1,0 +1,16 @@
+---
+import { logoImage } from "../lib/site";
+interface Props {
+  class?: string;
+  /** Show the logo in white (for dark backgrounds) */
+  mono?: boolean;
+}
+const { class: className = "", mono = false } = Astro.props;
+---
+<img
+  src={logoImage}
+  alt="Mercy Family Clinic & Wellness Center"
+  width="400"
+  height="86"
+  class:list={["logo-img h-10 w-auto sm:h-11", mono && "brightness-0 invert", className]}
+/>

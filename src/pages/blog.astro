@@ -1,0 +1,10 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import Blog from "../components/sections/Blog.astro";
+---
+
+<BaseLayout title="Blog | Mercy Family Clinic" description="Simple, helpful health reading from Dr. Izzy and the team.">
+  <PageHero eyebrow="From our blog" title="Health tips for your family" description="Simple, helpful reading from Dr. Izzy and the team." crumbs={[{ label: "Blog" }]} />
+  <Blog count={9} heading={false} />
+</BaseLayout>

@@ -1,0 +1,30 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import ServiceCard from "../../components/ServiceCard.astro";
+import ParallaxCta from "../../components/sections/ParallaxCta.astro";
+import Reveal from "../../components/islands/Reveal";
+import { services } from "../../lib/site";
+---
+
+<BaseLayout
+  title="Our Services | Mercy Family Clinic"
+  description="Family medicine, pediatrics, medical weight loss, diabetes care, women's health and more in Dallas, TX."
+>
+  <PageHero
+    eyebrow="What we do"
+    title="All our services"
+    description="Complete care for every member of your family, all in one place. Hover over a card, or tap it on your phone, to learn more."
+    crumbs={[{ label: "Services" }]}
+  />
+  <section class="section-pad">
+    <div class="container-page grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {services.map((s, i) => (
+        <Reveal client:visible delay={(i % 3) * 0.1}>
+          <ServiceCard service={s} index={i} />
+        </Reveal>
+      ))}
+    </div>
+  </section>
+  <ParallaxCta />
+</BaseLayout>

@@ -1,0 +1,24 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/sections/Hero.astro";
+import WhyMercy from "../components/sections/WhyMercy.astro";
+import Doctor from "../components/sections/Doctor.astro";
+import Services from "../components/sections/Services.astro";
+import FeelGood from "../components/sections/FeelGood.astro";
+import ParallaxCta from "../components/sections/ParallaxCta.astro";
+import Testimonials from "../components/sections/Testimonials.astro";
+import Blog from "../components/sections/Blog.astro";
+import Connect from "../components/sections/Connect.astro";
+---
+
+<BaseLayout>
+  <Hero />
+  <WhyMercy />
+  <Doctor />
+  <Services />
+  <FeelGood />
+  <ParallaxCta />
+  <Testimonials limit={4} />
+  <Blog />
+  <Connect />
+</BaseLayout>

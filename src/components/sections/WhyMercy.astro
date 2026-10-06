@@ -1,0 +1,31 @@
+---
+import Timeline from "../islands/Timeline";
+import Icon from "../Icon.astro";
+import { timeline, whyPoints, doctorImage } from "../../lib/site";
+---
+
+<!-- Pinned section: scrolling down slides the story sideways. -->
+<Timeline
+  client:load
+  items={timeline}
+  image={doctorImage}
+  imageAlt="Dr. Ebere Israel Azubuike (Dr. Izzy) of Mercy Family Clinic"
+  badge="Caring for Dallas since 2010"
+>
+  <p class="eyebrow">Why Mercy Family Clinic</p>
+  <h2 class="h2 mt-4">Care built on trust, one family at a time.</h2>
+  <p class="mt-5 max-w-md text-base text-muted sm:mt-6 sm:text-lg">
+    We believe good health starts with a doctor who knows you. That idea has guided our clinic from the very first day.
+  </p>
+  <ul class="mt-6 space-y-3 sm:mt-8 sm:space-y-4">
+    {whyPoints.map((p) => (
+      <li class="hover-pop hover-shift flex items-center gap-4 font-medium">
+        <span class="icon-pop flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700">
+          <Icon name={p.icon} class="h-5 w-5" />
+        </span>
+        {p.text}
+      </li>
+    ))}
+  </ul>
+  <a href="#doctor" class="btn btn-ghost mt-8 sm:mt-10">Meet Dr. Izzy</a>
+</Timeline>

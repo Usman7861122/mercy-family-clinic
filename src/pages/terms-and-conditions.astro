@@ -1,0 +1,149 @@
+---
+import LegalPage from "../components/LegalPage.astro";
+import { site, fullAddress } from "../lib/site";
+
+const toc = [
+  { id: "agreeing", label: "Using this website" },
+  { id: "not-medical-advice", label: "Not medical advice" },
+  { id: "emergencies", label: "Emergencies" },
+  { id: "appointments", label: "Appointment requests" },
+  { id: "accuracy", label: "Accuracy" },
+  { id: "ownership", label: "Our content" },
+  { id: "good-use", label: "Fair use" },
+  { id: "links", label: "Other websites" },
+  { id: "disclaimer", label: "No warranty" },
+  { id: "liability", label: "Limits of liability" },
+  { id: "privacy", label: "Privacy" },
+  { id: "law", label: "Texas law" },
+  { id: "changes", label: "Changes" },
+  { id: "contact", label: "Contact us" },
+];
+---
+
+<LegalPage
+  title="Terms & Conditions"
+  description="The simple rules for using the Mercy Family Clinic website."
+  updated="October 6, 2026"
+  toc={toc}
+>
+  <section id="agreeing" data-reveal>
+    <h2>Using this website</h2>
+    <p>
+      These terms apply when you visit the {site.name} website. By using it, you agree to these terms. If you do not agree,
+      please do not use the website.
+    </p>
+  </section>
+
+  <section id="not-medical-advice" data-reveal>
+    <h2>This website is not medical advice</h2>
+    <p>
+      The pages, articles and answers on this website give <strong>general information only</strong>. They do not diagnose or treat
+      any condition, and they are not a replacement for talking with a doctor about your own health.
+    </p>
+    <p>
+      Using this website, sending a form, or reading our blog does <strong>not</strong> create a doctor-patient relationship with Dr. Izzy
+      or anyone at the clinic. That relationship begins only when you are seen as a patient.
+    </p>
+  </section>
+
+  <section id="emergencies" data-reveal>
+    <h2>Emergencies</h2>
+    <p>
+      <strong>If you think you have a medical emergency, call 911 or go to the nearest emergency room.</strong> Do not use the contact form
+      for urgent problems. We may not see it right away.
+    </p>
+  </section>
+
+  <section id="appointments" data-reveal>
+    <h2>Appointment requests</h2>
+    <p>
+      Sending the form is a <strong>request</strong>, not a booked visit. Your appointment is confirmed only when a member of our team contacts you
+      and agrees a time with you. Our office hours are {site.hours[0].days}, {site.hours[0].time}.
+    </p>
+    <p>Please do not put private health details in the form. Call us at <a href={site.phoneHref}>{site.phone}</a> instead.</p>
+  </section>
+
+  <section id="accuracy" data-reveal>
+    <h2>Accuracy of information</h2>
+    <p>
+      We work to keep this website correct and up to date, but services, hours, medicines and programs can change. Some details may be
+      out of date or contain mistakes. Please call us to confirm anything that matters to you, such as services or insurance.
+    </p>
+  </section>
+
+  <section id="ownership" data-reveal>
+    <h2>Our content</h2>
+    <p>
+      The text, logo, design and other material on this website belong to {site.name} or are used with permission, unless stated
+      otherwise. You may view and print pages for your own personal use. Please do not copy, sell or reuse our content without asking us first.
+    </p>
+  </section>
+
+  <section id="good-use" data-reveal>
+    <h2>Fair use</h2>
+    <p>Please do not:</p>
+    <ul>
+      <li>Use the website for anything unlawful</li>
+      <li>Try to break into, damage or overload the website or its systems</li>
+      <li>Send spam, false information, or messages pretending to be someone else</li>
+      <li>Use automated tools to collect content from the website without our permission</li>
+    </ul>
+  </section>
+
+  <section id="links" data-reveal>
+    <h2>Other websites</h2>
+    <p>
+      This website links to other sites and uses some outside services, such as Google Maps and Google reviews. We do not control them
+      and are not responsible for their content or rules. Please read their terms and privacy policies.
+    </p>
+  </section>
+
+  <section id="disclaimer" data-reveal>
+    <h2>No warranty</h2>
+    <p>
+      We provide this website "as is" and "as available". We do not promise it will always work, be free of errors, or be free of
+      viruses. We may change or remove parts of it at any time.
+    </p>
+  </section>
+
+  <section id="liability" data-reveal>
+    <h2>Limits of liability</h2>
+    <p>
+      To the fullest extent the law allows, {site.name}, its doctors and its staff are not responsible for any loss or harm that comes
+      from using this website or relying on what it says. Nothing in these terms limits any right you have that the law does not allow
+      us to limit. Nothing here changes the duties we owe you as a patient once you are in our care.
+    </p>
+  </section>
+
+  <section id="privacy" data-reveal>
+    <h2>Privacy</h2>
+    <p>
+      Please read our <a href="/privacy-policy">Privacy Policy</a> to see what information we collect and how we use it. It is part of these terms.
+    </p>
+  </section>
+
+  <section id="law" data-reveal>
+    <h2>Texas law</h2>
+    <p>
+      These terms follow the laws of the State of Texas. If a disagreement cannot be settled between us, it will be handled in the
+      courts located in Dallas County, Texas.
+    </p>
+  </section>
+
+  <section id="changes" data-reveal>
+    <h2>Changes to these terms</h2>
+    <p>
+      We may update these terms from time to time. The date at the top of the page shows the latest change. If you keep using the website
+      after a change, you accept the new terms.
+    </p>
+  </section>
+
+  <section id="contact" data-reveal>
+    <h2>Contact us</h2>
+    <ul>
+      <li><strong>{site.name}</strong>, {fullAddress}</li>
+      <li>Phone: <a href={site.phoneHref}>{site.phone}</a> · Fax: {site.fax}</li>
+      <li>Or use the <a href="/contact">contact form</a></li>
+    </ul>
+  </section>
+</LegalPage>

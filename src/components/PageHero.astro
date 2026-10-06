@@ -1,0 +1,54 @@
+---
+import Icon from "./Icon.astro";
+import Breadcrumbs from "./Breadcrumbs.astro";
+import { site, fullAddress, directionsUrl } from "../lib/site";
+
+interface Crumb { label: string; href?: string }
+interface Props {
+  title: string;
+  eyebrow?: string;
+  description?: string;
+  crumbs?: Crumb[];
+  image?: string;
+  /** Show the clinic address under the title (used on service pages) */
+  showAddress?: boolean;
+}
+const { title, eyebrow, description, crumbs = [], image, showAddress = false } = Astro.props;
+---
+
+<section class="relative isolate overflow-hidden bg-brand-950 pb-16 pt-36 text-white sm:pb-24 sm:pt-44">
+  {image && <img src={image} alt="" class="absolute inset-0 -z-20 h-full w-full object-cover opacity-35" />}
+  <div class="absolute inset-0 -z-10 bg-gradient-to-br from-brand-950/90 via-brand-900/80 to-brand-800/70"></div>
+  <div aria-hidden="true" class="absolute -right-32 -top-32 -z-10 h-[28rem] w-[28rem] rounded-full bg-brand-700/30 blur-3xl"></div>
+
+  <div class="container-page">
+    <Breadcrumbs crumbs={crumbs} />
+    {eyebrow && <p class="eyebrow mt-8 !text-gold">{eyebrow}</p>}
+    <h1 class:list={["max-w-3xl text-balance text-4xl font-semibold !text-white sm:text-5xl lg:text-6xl", eyebrow ? "mt-4" : "mt-6"]}>{title}</h1>
+    {description && <p class="mt-6 max-w-2xl text-lg text-brand-100 sm:text-xl">{description}</p>}
+
+    {showAddress && (
+      <address class="mt-10 inline-flex max-w-full flex-col gap-5 rounded-2xl border border-white/15 bg-white/10 p-5 not-italic backdrop-blur-md sm:flex-row sm:items-center sm:gap-8 sm:px-7">
+        <a href={directionsUrl} target="_blank" rel="noopener" class="group flex items-center gap-4">
+          <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-cream text-brand-700"><Icon name="pin" class="h-6 w-6" /></span>
+          <span>
+            <span class="block font-heading text-[0.7rem] font-medium uppercase tracking-[0.22em] text-gold">Visit us in Dallas, TX</span>
+            <span class="mt-1 block text-base text-white sm:text-lg">{site.name}, <span class="whitespace-nowrap">{site.address.street}</span>, <span class="whitespace-nowrap">{site.address.city}, {site.address.state} {site.address.zip}</span></span>
+            <span class="sr-only">(opens directions in a new tab)</span>
+          </span>
+        </a>
+        <span aria-hidden="true" class="hidden h-10 w-px bg-white/20 sm:block"></span>
+        <div class="flex flex-wrap gap-x-8 gap-y-3">
+          <a href={site.phoneHref} class="flex items-center gap-3 text-white transition hover:text-gold">
+            <Icon name="phone" class="h-5 w-5 text-gold" />
+            <span class="font-heading text-sm font-medium">{site.phone}</span>
+          </a>
+          <span class="flex items-center gap-3 text-brand-100">
+            <Icon name="clock" class="h-5 w-5 text-gold" />
+            <span class="text-sm">Mon – Fri · 9 AM – 5 PM</span>
+          </span>
+        </div>
+      </address>
+    )}
+  </div>
+</section>

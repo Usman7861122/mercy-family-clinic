@@ -1,0 +1,48 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "./PageHero.astro";
+import Icon from "./Icon.astro";
+import { site, legalLinks } from "../lib/site";
+
+interface Props {
+  title: string;
+  description: string;
+  /** Shown as "Last updated". Change it whenever the text changes. */
+  updated: string;
+  toc: { id: string; label: string }[];
+}
+const { title, description, updated, toc } = Astro.props;
+const here = Astro.url.pathname.replace(/\/$/, "");
+const others = legalLinks.filter((l) => l.href !== here);
+---
+
+<BaseLayout title={`${title} | ${site.name}`} description={description}>
+  <PageHero eyebrow="Legal" title={title} description={description} crumbs={[{ label: title }]} />
+
+  <section class="section-pad">
+    <div class="container-page grid gap-12 lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-20">
+      <aside class="lg:sticky lg:top-28 lg:self-start" data-reveal>
+        <nav aria-label="On this page" class="rounded-3xl bg-white p-5 shadow-lg shadow-brand-900/5 ring-1 ring-brand-900/5">
+          <h2 class="px-2 pb-2 font-heading text-xs font-medium uppercase tracking-[0.2em] text-brand-600">On this page</h2>
+          <ol class="space-y-1">
+            {toc.map((t, i) => (
+              <li>
+                <a href={`#${t.id}`} class="link-slide flex min-h-10 items-baseline gap-3 rounded-lg px-2 py-1.5 text-sm text-brand-950 hover:bg-brand-50 hover:text-brand-700">
+                  <span class="font-heading text-xs text-gold">{String(i + 1).padStart(2, "0")}</span>{t.label}
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+        <p class="mt-6 flex items-center gap-2 px-2 text-sm text-muted"><Icon name="clock" class="h-4 w-4 text-gold" />Last updated {updated}</p>
+        <ul class="mt-4 space-y-1 px-2 text-sm">
+          {others.map((l) => (<li><a href={l.href} class="link-slide inline-block text-brand-700 underline decoration-gold decoration-2 underline-offset-4">{l.label}</a></li>))}
+        </ul>
+      </aside>
+
+      <article class="legal max-w-3xl">
+        <slot />
+      </article>
+    </div>
+  </section>
+</BaseLayout>

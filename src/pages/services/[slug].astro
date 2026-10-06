@@ -1,0 +1,121 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import Icon from "../../components/Icon.astro";
+import ParallaxCta from "../../components/sections/ParallaxCta.astro";
+import { services, serviceBySlug, site, menuServices, unsplash } from "../../lib/site";
+import { contactHref } from "../../lib/links";
+import { faqs as allFaqs } from "../../lib/faqs";
+
+export function getStaticPaths() {
+  return services.map((s) => ({ params: { slug: s.slug } }));
+}
+
+const service = serviceBySlug(Astro.params.slug!)!;
+const others = menuServices.filter((m) => m.href !== `/services/${service.slug}`);
+const cta = contactHref(Astro.url);
+const faqs = allFaqs[service.slug] ?? [];
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: f.a },
+  })),
+};
+---
+
+<BaseLayout
+  title={`${service.title} in Dallas, TX | Mercy Family Clinic`}
+  description={service.intro}
+>
+  <PageHero
+    eyebrow="Our services"
+    title={service.title}
+    description={service.intro}
+    image={unsplash(service.image, 1600)}
+    showAddress
+    crumbs={[{ label: "Services", href: "/services" }, { label: service.title }]}
+  />
+
+  <section class="section-pad">
+    <div class="container-page grid gap-14 lg:grid-cols-[1fr_22rem] lg:gap-20">
+      <article class="max-w-3xl">
+        {service.sections.map((sec) => (
+          <section class="mb-12 last:mb-0" data-reveal>
+            <h2 class="text-2xl font-semibold sm:text-3xl">{sec.heading}</h2>
+            {sec.paragraphs?.map((p) => <p class="mt-4 text-lg text-muted">{p}</p>)}
+            {sec.bullets && (
+              <ul class="mt-5 grid gap-3 sm:grid-cols-2" data-stagger="70">
+                {sec.bullets.map((b) => (
+                  <li class="hover-pop flex items-start gap-3">
+                    <span class="icon-pop mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700"><Icon name="check" class="h-3.5 w-3.5" /></span>
+                    <span>{b}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {sec.after?.map((p) => <p class="mt-5 text-lg text-muted">{p}</p>)}
+          </section>
+        ))}
+        {faqs.length > 0 && (
+          <section id="faqs" class="mt-16" aria-labelledby="faq-title">
+            <div class="flex items-center gap-4">
+              <span class="flex h-12 w-12 items-center justify-center rounded-full bg-brand-100 text-brand-700"><Icon name="help" class="h-6 w-6" /></span>
+              <div>
+                <p class="eyebrow">FAQs</p>
+                <h2 id="faq-title" class="mt-1 text-2xl font-semibold sm:text-3xl">Frequently asked questions</h2>
+              </div>
+            </div>
+            <div class="mt-8 space-y-4" data-stagger="90">
+              {faqs.map((f) => (
+                <details open class="faq group rounded-2xl bg-white shadow-md shadow-brand-900/5 ring-1 ring-brand-900/5 transition duration-300 hover:shadow-xl hover:shadow-brand-900/10 open:ring-brand-600/30">
+                  <summary class="flex min-h-16 cursor-pointer list-none items-center justify-between gap-4 rounded-2xl px-6 py-4 font-heading text-base font-medium text-brand-950 sm:text-lg [&::-webkit-details-marker]:hidden">
+                    <span>{f.q}</span>
+                    <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700 transition group-open:rotate-180 group-open:bg-brand-700 group-open:text-white">
+                      <Icon name="chevron" class="h-5 w-5" />
+                    </span>
+                  </summary>
+                  <p class="px-6 pb-6 pr-16 text-muted">{f.a}</p>
+                </details>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <p class="mt-14 border-t border-brand-900/10 pt-6 text-sm text-muted">
+          This page gives general information and is not medical advice. Please talk with our team about your own health.
+        </p>
+      </article>
+
+      <aside class="space-y-8 lg:sticky lg:top-28 lg:self-start">
+        <div class="rounded-3xl bg-brand-900 p-7 text-white shadow-xl shadow-brand-900/15" data-reveal="right">
+          <span class="flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-gold"><Icon name={service.icon} class="h-6 w-6" /></span>
+          <h2 class="mt-5 text-xl font-semibold !text-white">Book a visit</h2>
+          <p class="mt-2 text-sm text-brand-100">Call us or send a request. We will confirm a time that works for you.</p>
+          <a href={site.phoneHref} class="btn btn-light mt-6 w-full"><Icon name="phone" class="h-4 w-4" />{site.phone}</a>
+          <a href={cta} class="btn btn-ghost-light mt-3 w-full"><Icon name="calendar" class="h-4 w-4" />Request Appointment</a>
+          <p class="mt-5 flex items-center gap-2 text-xs text-brand-200"><Icon name="clock" class="h-4 w-4 text-gold" />Mon – Fri · 9 AM – 5 PM</p>
+        </div>
+
+        <nav aria-label="Other services" data-reveal="right" style="--d:120ms" class="rounded-3xl bg-white p-4 shadow-lg shadow-brand-900/5 ring-1 ring-brand-900/5">
+          <h2 class="px-3 pb-2 pt-3 font-heading text-xs font-medium uppercase tracking-[0.2em] text-brand-600">Other services</h2>
+          <ul>
+            {others.map((o) => (
+              <li>
+                <a href={o.href} class="hover-pop flex min-h-12 items-center gap-3 rounded-xl px-3 py-2 text-brand-950 transition hover:bg-brand-50">
+                  <span class="icon-pop flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700"><Icon name={o.icon!} class="h-4 w-4" /></span>
+                  <span class="font-heading text-sm font-medium">{o.label}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </aside>
+    </div>
+  </section>
+
+  <ParallaxCta />
+  {faqs.length > 0 && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}
+</BaseLayout>

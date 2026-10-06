@@ -1,0 +1,101 @@
+---
+import Reveal from "../islands/Reveal";
+import Icon from "../Icon.astro";
+import ContactForm from "../islands/ContactForm";
+import { site, fullAddress, mapEmbedUrl, directionsUrl } from "../../lib/site";
+
+interface Props { heading?: boolean }
+const { heading = true } = Astro.props;
+---
+
+<section id="contact" class="section-pad">
+  <div class="container-page">
+    {heading && (
+      <Reveal client:visible className="mx-auto max-w-2xl text-center">
+        <p class="eyebrow">Get in touch</p>
+        <h2 class="h2 mt-4">Let's connect</h2>
+        <p class="mt-5 text-lg text-muted">Request an appointment or ask us a question. We are happy to help.</p>
+      </Reveal>
+    )}
+
+    <div class:list={["grid gap-8 lg:grid-cols-2", heading && "mt-14"]}>
+      <Reveal client:visible className="flex h-full flex-col gap-6">
+        <div class="relative min-h-[22rem] flex-1 overflow-hidden rounded-3xl shadow-xl shadow-brand-900/10 ring-1 ring-brand-900/10">
+          <iframe
+            id="map-frame"
+            title={`Map showing ${site.name} at ${fullAddress}`}
+            data-src={mapEmbedUrl}
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen
+            hidden
+            class="absolute inset-0 h-full w-full border-0"
+          ></iframe>
+          <!-- The Google map loads only after the visitor allows it (see cookie settings). -->
+          <div id="map-gate" class="absolute inset-0 flex flex-col items-center justify-center gap-5 bg-gradient-to-br from-brand-50 to-sand p-8 text-center">
+            <span class="flex h-16 w-16 items-center justify-center rounded-full bg-white text-brand-700 shadow-lg shadow-brand-900/10"><Icon name="pin" class="h-8 w-8" /></span>
+            <div>
+              <h3 class="text-xl font-semibold">{site.name}</h3>
+              <p class="mt-1 text-muted">{fullAddress}</p>
+            </div>
+            <p class="max-w-sm text-sm text-muted">The interactive map comes from Google, which may set cookies. We only load it if you agree.</p>
+            <div class="flex flex-wrap justify-center gap-3">
+              <button type="button" id="map-load" class="btn btn-primary">Load map</button>
+              <a href={directionsUrl} target="_blank" rel="noopener" class="btn btn-ghost">Open in Google Maps<span class="sr-only"> (opens in a new tab)</span></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid gap-6 rounded-3xl bg-brand-900 p-7 text-white sm:grid-cols-3" data-stagger="120">
+          <div class="hover-pop">
+            <span class="icon-pop flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-gold"><Icon name="pin" class="h-5 w-5" /></span>
+            <h3 class="mt-4 font-heading text-xs font-medium uppercase tracking-[0.2em] !text-gold">Address</h3>
+            <p class="mt-3 text-sm text-brand-100">{site.address.street}<br />{site.address.city}, {site.address.state} {site.address.zip}</p>
+            <a href={directionsUrl} target="_blank" rel="noopener" class="mt-3 inline-block text-sm font-medium text-white underline decoration-gold underline-offset-4">Get directions<span class="sr-only"> (opens in a new tab)</span></a>
+          </div>
+          <div class="hover-pop">
+            <span class="icon-pop flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-gold"><Icon name="phone" class="h-5 w-5" /></span>
+            <h3 class="mt-4 font-heading text-xs font-medium uppercase tracking-[0.2em] !text-gold">Call</h3>
+            <a href={site.phoneHref} class="mt-3 block text-sm text-white hover:text-gold">{site.phone}</a>
+            <p class="mt-1 text-sm text-brand-200">Fax {site.fax}</p>
+          </div>
+          <div class="hover-pop">
+            <span class="icon-pop flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-gold"><Icon name="clock" class="h-5 w-5" /></span>
+            <h3 class="mt-4 font-heading text-xs font-medium uppercase tracking-[0.2em] !text-gold">Hours</h3>
+            <ul class="mt-3 space-y-2 text-sm text-brand-100">
+              {site.hours.map((h) => (<li><span class="block text-white">{h.days}</span>{h.time}</li>))}
+            </ul>
+          </div>
+        </div>
+      </Reveal>
+
+      <Reveal client:visible delay={0.1} className="h-full">
+        <div class="h-full rounded-3xl bg-white p-7 shadow-xl shadow-brand-900/10 ring-1 ring-brand-900/5 sm:p-10">
+          <h3 class="mb-8 text-2xl font-semibold">Request an appointment</h3>
+          <ContactForm client:visible />
+        </div>
+      </Reveal>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { getConsent, onConsent } from "../../lib/consent";
+
+  const frame = document.getElementById("map-frame") as HTMLIFrameElement | null;
+  const gate = document.getElementById("map-gate");
+  const loadBtn = document.getElementById("map-load");
+
+  const load = () => {
+    if (!frame || !gate) return;
+    if (!frame.src) frame.src = frame.dataset.src ?? "";
+    frame.hidden = false;
+    gate.hidden = true;
+  };
+
+  // "Load map" loads it for this visit only. The cookie settings can allow it for good.
+  loadBtn?.addEventListener("click", load);
+  const apply = () => { if (getConsent()?.maps) load(); };
+  onConsent(apply);
+  apply();
+</script>

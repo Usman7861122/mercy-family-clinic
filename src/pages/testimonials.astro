@@ -1,0 +1,12 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import Testimonials from "../components/sections/Testimonials.astro";
+import ParallaxCta from "../components/sections/ParallaxCta.astro";
+---
+
+<BaseLayout title="Patient Testimonials | Mercy Family Clinic" description="Kind words from the families we care for in Dallas, TX.">
+  <PageHero eyebrow="Patient reviews" title="Families who trust us" description="Kind words from the people we care for." crumbs={[{ label: "Testimonials" }]} />
+  <Testimonials heading={false} wide />
+  <ParallaxCta />
+</BaseLayout>

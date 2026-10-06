@@ -1,0 +1,47 @@
+---
+import Icon from "../Icon.astro";
+import { site, images, unsplash } from "../../lib/site";
+---
+
+<section class="relative isolate flex min-h-svh items-end overflow-hidden bg-brand-950 text-white">
+  <img
+    src={unsplash(images.hero, 2000)}
+    srcset={`${unsplash(images.hero, 900)} 900w, ${unsplash(images.hero, 1400)} 1400w, ${unsplash(images.hero, 2000)} 2000w`}
+    sizes="100vw"
+    alt="A mother lifts her laughing young son on the beach at sunset"
+    width="2000"
+    height="1333"
+    fetchpriority="high"
+    class="slow-zoom absolute inset-0 -z-20 h-full w-full object-cover object-[72%_45%]"
+  />
+  <div class="absolute inset-0 -z-10 bg-gradient-to-r from-brand-950/90 via-brand-950/55 to-brand-950/5"></div>
+  <div class="absolute inset-0 -z-10 bg-gradient-to-t from-brand-950/75 via-transparent to-brand-950/40"></div>
+
+  <div class="container-page w-full pb-28 pt-40 sm:pb-36">
+    <div class="max-w-3xl">
+      <p class="eyebrow rise !text-gold !tracking-[0.16em] sm:!tracking-[0.22em]" style="animation-delay: 0.15s">
+        Family Medicine · Medical Weight Loss · Dallas, TX
+      </p>
+      <h1 class="rise mt-6 text-balance text-[2.5rem] font-semibold leading-[1.06] !text-white sm:text-6xl lg:text-[4.25rem]" style="animation-delay: 0.3s">
+        Caring for your whole family, <span class="text-gold">for life.</span>
+      </h1>
+      <p class="rise mt-6 max-w-lg text-lg text-white/85 sm:text-xl" style="animation-delay: 0.45s">
+        Warm, thorough primary care from Dr. Izzy and our team, for patients of every age.
+      </p>
+      <div class="rise mt-10 flex flex-col gap-4 sm:flex-row" style="animation-delay: 0.6s">
+        <a href="#contact" class="btn btn-light"><Icon name="calendar" class="h-4 w-4" />Request Appointment</a>
+        <a href={site.phoneHref} class="btn btn-ghost-light"><Icon name="phone" class="h-4 w-4" />Call {site.phone}</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="rise absolute inset-x-0 bottom-7 hidden sm:block" style="animation-delay: 1s">
+    <div class="container-page flex items-center justify-between text-xs tracking-wide text-white/70">
+      <p class="flex items-center gap-2"><Icon name="clock" class="h-4 w-4" />Mon – Fri · 9 AM – 5 PM</p>
+      <a href="#why" class="flex items-center gap-3 transition hover:text-white" aria-label="Scroll to next section">
+        <span class="font-heading uppercase tracking-[0.25em]">Scroll</span>
+        <span class="block h-10 w-px bg-white/40"></span>
+      </a>
+    </div>
+  </div>
+</section>

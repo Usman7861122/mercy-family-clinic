@@ -1,0 +1,10 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import Connect from "../components/sections/Connect.astro";
+---
+
+<BaseLayout title="Contact Us | Mercy Family Clinic" description="Request an appointment or ask us a question. 1114 N. Bishop Avenue, Dallas, TX 75208. 214-942-2377.">
+  <PageHero eyebrow="Get in touch" title="Let's connect" description="Request an appointment or ask us a question. We are happy to help." crumbs={[{ label: "Contact" }]} />
+  <Connect heading={false} />
+</BaseLayout>

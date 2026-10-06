@@ -1,0 +1,50 @@
+---
+import Reveal from "../islands/Reveal";
+import Icon from "../Icon.astro";
+import { reviews, googleReviewsUrl } from "../../lib/site";
+
+interface Props { limit?: number; heading?: boolean; wide?: boolean }
+const { limit = reviews.length, heading = true, wide = false } = Astro.props;
+const shown = reviews.slice(0, limit);
+
+const initials = (name: string) =>
+  name.replace(/[^\p{L} ]/gu, "").split(" ").filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
+---
+
+<section id="reviews" class="section-pad">
+  <div class="container-page">
+    {heading && (
+      <Reveal client:visible className="mx-auto max-w-2xl text-center">
+        <p class="eyebrow">Patient reviews</p>
+        <h2 class="h2 mt-4">Families who trust us</h2>
+        <p class="mt-5 text-lg text-muted">Kind words from the people we care for.</p>
+      </Reveal>
+    )}
+
+    <ul class:list={["grid auto-rows-fr gap-6 sm:grid-cols-2", heading && "mt-14", wide ? "lg:grid-cols-3" : "lg:grid-cols-4"]}>
+      {shown.map((r, i) => (
+        <li>
+          <Reveal client:visible delay={i * 0.08} className="h-full">
+            <figure class="lift flex h-full min-h-[18rem] flex-col rounded-3xl bg-white p-8 shadow-lg shadow-brand-900/5 ring-1 ring-brand-900/5">
+              <span class="icon-pop flex h-12 w-12 items-center justify-center rounded-full bg-brand-50 text-gold"><Icon name="quote" class="h-6 w-6" fill="currentColor" /></span>
+              <blockquote class="mt-6 flex-1 text-lg leading-relaxed text-ink">“{r.text}”</blockquote>
+              <figcaption class="mt-8 flex items-center gap-3">
+                <span class="flex h-11 w-11 items-center justify-center rounded-full bg-brand-100 font-heading text-sm font-semibold text-brand-800" aria-hidden="true">{initials(r.name)}</span>
+                <span>
+                  <span class="block font-heading text-sm font-semibold text-brand-950">{r.name}</span>
+                  <span class="block text-sm text-muted">Patient</span>
+                </span>
+              </figcaption>
+            </figure>
+          </Reveal>
+        </li>
+      ))}
+    </ul>
+
+    <p class="mt-12 text-center">
+      <a href={googleReviewsUrl} target="_blank" rel="noopener" class="font-heading text-sm font-medium text-brand-700 underline decoration-gold decoration-2 underline-offset-8 transition hover:text-brand-900">
+        Read more reviews on Google<span class="sr-only"> (opens in a new tab)</span>
+      </a>
+    </p>
+  </div>
+</section>

@@ -1,0 +1,82 @@
+---
+import Logo from "./Logo.astro";
+import Icon from "./Icon.astro";
+import { site, fullAddress, directionsUrl, menuServices, legalLinks } from "../lib/site";
+import { contactHref } from "../lib/links";
+const year = new Date().getFullYear();
+const cta = contactHref(Astro.url);
+
+const explore = [
+  { label: "Home", href: "/" },
+  { label: "About Us", href: "/about" },
+  { label: "Meet Dr. Izzy", href: "/about/meet-dr-izzy" },
+  { label: "Testimonials", href: "/testimonials" },
+  { label: "Blog", href: "/blog" },
+  { label: "Contact", href: "/contact" },
+];
+---
+
+<footer class="relative overflow-hidden bg-brand-950 text-brand-100">
+  <div class="container-page relative z-10 pt-20 sm:pt-24">
+    <div class="flex flex-col items-start justify-between gap-8 border-b border-white/10 pb-14 lg:flex-row lg:items-end" data-reveal>
+      <h2 class="max-w-3xl text-balance font-heading text-3xl font-semibold !text-white sm:text-5xl">
+        Let's take care of <span class="text-gold">your family</span>.
+      </h2>
+      <a href={cta} class="btn btn-light"><Icon name="calendar" class="h-4 w-4" />Request Appointment</a>
+    </div>
+
+    <div class="grid gap-12 py-14 sm:grid-cols-2 lg:grid-cols-[1.3fr_0.8fr_1.2fr_1.3fr]" data-stagger="110">
+      <div>
+        <a href="/" aria-label="Mercy Family Clinic, home"><Logo mono class="h-12 sm:h-14" /></a>
+        <p class="mt-6 max-w-xs text-sm leading-relaxed text-brand-200">
+          Family medicine and medical weight loss in Dallas, led by Dr. Ebere Israel Azubuike, MD.
+        </p>
+      </div>
+
+      <nav aria-label="Footer">
+        <h3 class="font-heading text-xs font-medium uppercase tracking-[0.22em] !text-gold">Explore</h3>
+        <ul class="mt-5 space-y-3 text-sm">
+          {explore.map((item) => (
+            <li><a href={item.href} class="link-slide inline-block text-brand-100 hover:text-white">{item.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+
+      <nav aria-label="Footer services">
+        <h3 class="font-heading text-xs font-medium uppercase tracking-[0.22em] !text-gold">Services</h3>
+        <ul class="mt-5 space-y-3 text-sm">
+          {menuServices.map((item) => (
+            <li><a href={item.href} class="link-slide inline-block text-brand-100 hover:text-white">{item.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+
+      <div>
+        <h3 class="font-heading text-xs font-medium uppercase tracking-[0.22em] !text-gold">Visit us</h3>
+        <address class="mt-5 space-y-3 text-sm not-italic">
+          <a href={directionsUrl} target="_blank" rel="noopener" class="flex gap-3 text-brand-100 transition hover:text-white"><Icon name="pin" class="mt-0.5 h-4 w-4 shrink-0 text-gold" />{fullAddress}</a>
+          <a href={site.phoneHref} class="flex items-center gap-3 text-white transition hover:text-gold"><Icon name="phone" class="h-4 w-4 shrink-0 text-gold" />{site.phone}</a>
+          <span class="flex items-center gap-3 text-brand-200"><Icon name="fax" class="h-4 w-4 shrink-0 text-gold" />Fax {site.fax}</span>
+        </address>
+        <ul class="mt-6 space-y-3 text-sm">
+          {site.hours.map((h) => (
+            <li class="flex gap-3"><Icon name="clock" class="mt-0.5 h-4 w-4 shrink-0 text-gold" /><span><span class="block text-white">{h.days}</span><span class="text-brand-200">{h.time}</span></span></li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-4 border-t border-white/10 py-8 text-xs text-brand-300 lg:flex-row lg:items-center lg:justify-between">
+      <p>© {year} {site.name}. All rights reserved.</p>
+      <ul class="flex flex-wrap gap-x-6 gap-y-2">
+        {legalLinks.map((l) => (<li><a href={l.href} class="transition hover:text-white">{l.label}</a></li>))}
+        <li><button type="button" data-cookie-settings class="transition hover:text-white">Cookie settings</button></li>
+      </ul>
+      <p>For emergencies, call 911. This website does not give medical advice.</p>
+    </div>
+  </div>
+
+  <p aria-hidden="true" class="pointer-events-none relative z-0 -mb-[3vw] select-none text-center font-heading text-[22vw] font-semibold leading-[0.8] tracking-tighter text-white/[0.025]">
+    Mercy
+  </p>
+</footer>

@@ -1,0 +1,49 @@
+---
+import {
+  Scale, Users, Baby, Droplets, Flower2, Stethoscope, Syringe, HeartPulse, FlaskConical,
+  ShieldCheck, MapPin, Phone, Clock, CalendarCheck, Award, Quote, ArrowRight, Sparkles,
+  Navigation, Printer, GraduationCap, Repeat2, Leaf, ChevronDown, Menu, X, Check, CircleHelp, Cookie, ArrowUp, Accessibility, ScrollText, FileText,
+} from "@lucide/astro";
+
+// One place to pick icons. Use: <Icon name="phone" class="h-4 w-4" />
+const registry: Record<string, any> = {
+  scale: Scale,
+  users: Users,
+  baby: Baby,
+  droplets: Droplets,
+  flower: Flower2,
+  stethoscope: Stethoscope,
+  syringe: Syringe,
+  "heart-pulse": HeartPulse,
+  flask: FlaskConical,
+  shield: ShieldCheck,
+  pin: MapPin,
+  phone: Phone,
+  clock: Clock,
+  calendar: CalendarCheck,
+  award: Award,
+  quote: Quote,
+  arrow: ArrowRight,
+  sparkles: Sparkles,
+  directions: Navigation,
+  fax: Printer,
+  graduation: GraduationCap,
+  flip: Repeat2,
+  leaf: Leaf,
+  chevron: ChevronDown,
+  menu: Menu,
+  close: X,
+  check: Check,
+  help: CircleHelp,
+  cookie: Cookie,
+  "arrow-up": ArrowUp,
+  accessibility: Accessibility,
+  scroll: ScrollText,
+  file: FileText,
+};
+
+const { name, class: className = "h-5 w-5", ...rest } = Astro.props;
+const Component = registry[name];
+---
+
+{Component && <Component class={className} aria-hidden="true" {...rest} />}

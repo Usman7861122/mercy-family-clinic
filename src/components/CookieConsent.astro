@@ -1,0 +1,131 @@
+---
+import Icon from "./Icon.astro";
+---
+
+<!-- Cookie banner. Equal choices: Accept all or Reject non-essential. Reopen it from the footer ("Cookie settings"). -->
+<div
+  id="cookie-banner"
+  role="dialog"
+  aria-modal="false"
+  aria-labelledby="cc-title"
+  aria-describedby="cc-desc"
+  hidden
+  class="fixed inset-x-3 bottom-3 z-[90] sm:inset-x-auto sm:bottom-6 sm:left-6 sm:w-[27rem]"
+>
+  <div class="rounded-3xl bg-white p-6 shadow-2xl shadow-brand-950/25 ring-1 ring-brand-900/10 sm:p-7">
+    <div class="flex items-start gap-4">
+      <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700"><Icon name="cookie" class="h-6 w-6" /></span>
+      <div>
+        <h2 id="cc-title" class="text-lg font-semibold">Your privacy choices</h2>
+        <p id="cc-desc" class="mt-2 text-sm leading-relaxed text-muted">
+          We use one small cookie to remember your choice. Our map comes from Google and loads only if you allow it. We do not use ads or tracking.{" "}
+          <a href="/privacy-policy#cookies" class="font-medium text-brand-700 underline decoration-gold decoration-2 underline-offset-4">Learn more</a>
+        </p>
+      </div>
+    </div>
+
+    <div id="cc-details" hidden class="mt-5 space-y-3 border-t border-brand-900/10 pt-5">
+      <div class="flex items-center justify-between gap-4">
+        <div>
+          <p class="font-heading text-sm font-medium text-brand-950">Essential</p>
+          <p class="text-xs text-muted">Remembers this choice. Needed for the site to work.</p>
+        </div>
+        <span class="shrink-0 rounded-full bg-brand-100 px-3 py-1 text-xs font-medium text-brand-800">Always on</span>
+      </div>
+      <label class="flex cursor-pointer items-center justify-between gap-4">
+        <span>
+          <span class="block font-heading text-sm font-medium text-brand-950">Google Maps</span>
+          <span class="block text-xs text-muted">Shows our location map. Google may set its own cookies.</span>
+        </span>
+        <input id="cc-maps" type="checkbox" role="switch" class="peer sr-only" />
+        <span
+          aria-hidden="true"
+          class="relative h-7 w-12 shrink-0 rounded-full bg-brand-900/25 transition-colors after:absolute after:left-1 after:top-1 after:h-5 after:w-5 after:rounded-full after:bg-white after:shadow after:transition-transform peer-checked:bg-brand-700 peer-checked:after:translate-x-5 peer-focus-visible:outline peer-focus-visible:outline-[3px] peer-focus-visible:outline-offset-2 peer-focus-visible:outline-gold"
+        ></span>
+      </label>
+    </div>
+
+    <div class="mt-6 grid gap-3 sm:grid-cols-2">
+      <button type="button" data-cc="accept" class="btn btn-primary !min-h-11">Accept all</button>
+      <button type="button" data-cc="reject" class="btn btn-ghost !min-h-11">Reject non-essential</button>
+      <button type="button" data-cc="save" id="cc-save" hidden class="btn btn-ghost !min-h-11 sm:col-span-2">Save my choices</button>
+    </div>
+    <button
+      type="button"
+      data-cc="toggle"
+      id="cc-toggle"
+      aria-expanded="false"
+      aria-controls="cc-details"
+      class="mt-4 inline-flex min-h-11 w-full items-center justify-center font-heading text-sm font-medium text-brand-700 underline decoration-gold decoration-2 underline-offset-8 transition hover:text-brand-900"
+    >
+      Customize
+    </button>
+  </div>
+</div>
+
+<script>
+  import { getConsent, saveConsent } from "../lib/consent";
+
+  const banner = document.getElementById("cookie-banner") as HTMLElement;
+  const details = document.getElementById("cc-details") as HTMLElement;
+  const maps = document.getElementById("cc-maps") as HTMLInputElement;
+  const saveBtn = document.getElementById("cc-save") as HTMLElement;
+  const toggleBtn = document.getElementById("cc-toggle") as HTMLButtonElement;
+  let opener: HTMLElement | null = null;
+
+  const setDetails = (open: boolean) => {
+    details.hidden = !open;
+    saveBtn.hidden = !open;
+    toggleBtn.setAttribute("aria-expanded", String(open));
+    toggleBtn.textContent = open ? "Hide options" : "Customize";
+  };
+
+  const show = (focus: boolean) => {
+    maps.checked = Boolean(getConsent()?.maps);
+    banner.hidden = false;
+    banner.classList.remove("rise");
+    void banner.offsetWidth; // restart the animation
+    banner.classList.add("rise");
+    if (focus) {
+      setDetails(true);
+      maps.focus();
+    }
+  };
+
+  const hide = () => {
+    banner.hidden = true;
+    setDetails(false);
+    opener?.focus();
+    opener = null;
+  };
+
+  const decide = (allowMaps: boolean) => {
+    saveConsent(allowMaps);
+    hide();
+  };
+
+  banner.addEventListener("click", (e) => {
+    const action = (e.target as HTMLElement).closest<HTMLElement>("[data-cc]")?.dataset.cc;
+    if (action === "accept") decide(true);
+    else if (action === "reject") decide(false);
+    else if (action === "save") decide(maps.checked);
+    else if (action === "toggle") setDetails(Boolean(details.hidden));
+  });
+
+  // Escape closes the panel only if a choice was already made.
+  banner.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && getConsent()) hide();
+  });
+
+  // Any "Cookie settings" button on the site reopens the panel.
+  document.addEventListener("click", (e) => {
+    const trigger = (e.target as HTMLElement).closest<HTMLElement>("[data-cookie-settings]");
+    if (!trigger) return;
+    e.preventDefault();
+    opener = trigger;
+    show(true);
+  });
+
+  // First visit: show the banner shortly after load (no focus stealing).
+  if (!getConsent()) window.setTimeout(() => show(false), 900);
+</script>

@@ -1,0 +1,29 @@
+---
+import ServiceCard from "../ServiceCard.astro";
+import Reveal from "../islands/Reveal";
+import { homeServices } from "../../lib/site";
+---
+
+<section id="services" class="section-pad bg-sand/60">
+  <div class="container-page">
+    <Reveal client:visible className="mx-auto max-w-2xl text-center">
+      <p class="eyebrow">What we do</p>
+      <h2 class="h2 mt-4">Services we offer</h2>
+      <p class="mt-5 text-lg text-muted">
+        Complete care for every stage of life. Hover over a card, or tap it on your phone, to learn more.
+      </p>
+    </Reveal>
+
+    <div class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {homeServices.map((service, i) => (
+        <Reveal client:visible delay={(i % 3) * 0.1}>
+          <ServiceCard service={service} index={i} />
+        </Reveal>
+      ))}
+    </div>
+
+    <div class="mt-14 text-center">
+      <a href="/services" class="btn btn-primary">View all services</a>
+    </div>
+  </div>
+</section>

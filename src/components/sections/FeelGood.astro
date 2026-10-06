@@ -1,0 +1,52 @@
+---
+import Reveal from "../islands/Reveal";
+import Icon from "../Icon.astro";
+import { weightLossImage } from "../../lib/site";
+
+const perks = [
+  { icon: "scale", text: "GLP-1 medications such as Wegovy and Mounjaro" },
+  { icon: "syringe", text: "B-12 and lipotropic injections" },
+  { icon: "leaf", text: "Nutrition and lifestyle support" },
+];
+---
+
+<section class="section-pad overflow-hidden">
+  <div class="container-page grid items-center gap-16 lg:grid-cols-2 lg:gap-24">
+    <Reveal client:visible className="relative mx-auto w-full max-w-md lg:max-w-none lg:pr-10">
+      <div aria-hidden="true" class="absolute -left-4 top-6 h-full w-full rounded-t-[999px] rounded-b-[2rem] border border-gold/70 sm:-left-6 sm:top-8"></div>
+      <div class="relative aspect-[4/5] w-full overflow-hidden rounded-t-[999px] rounded-b-[2rem] bg-gradient-to-b from-brand-600 to-brand-800 shadow-2xl shadow-brand-900/20">
+        <img
+          src={weightLossImage.local}
+          onerror={`this.onerror=null;this.src='${weightLossImage.remote}'`}
+          alt="Smiling woman measuring her waist with a tape measure"
+          loading="lazy"
+          class="absolute inset-0 h-full w-full object-contain object-bottom"
+        />
+      </div>
+      <div class="absolute -bottom-6 right-0 flex max-w-[16rem] items-center gap-3 rounded-2xl bg-white p-4 shadow-xl shadow-brand-900/15 sm:right-2 lg:-right-2">
+        <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700"><Icon name="sparkles" class="h-5 w-5" /></span>
+        <span>
+          <span class="block font-heading text-sm font-semibold text-brand-900">Medical Weight Loss</span>
+          <span class="block text-sm text-muted">Supervised by our doctor</span>
+        </span>
+      </div>
+    </Reveal>
+
+    <Reveal client:visible delay={0.1}>
+      <p class="eyebrow">Feel your best</p>
+      <h2 class="h2 mt-4">When you look good, <span class="text-brand-600">you feel good.</span></h2>
+      <p class="mt-6 max-w-lg text-lg text-muted">
+        Confidence starts with feeling well. Our medically supervised weight loss program builds a plan around your body and your life.
+      </p>
+      <ul class="mt-8 space-y-4">
+        {perks.map((p) => (
+          <li class="hover-pop hover-shift flex items-center gap-4">
+            <span class="icon-pop flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700"><Icon name={p.icon} class="h-5 w-5" /></span>
+            <span class="font-medium">{p.text}</span>
+          </li>
+        ))}
+      </ul>
+      <a href="/services/medical-weight-loss" class="btn btn-primary mt-10">Explore weight loss<Icon name="arrow" class="h-4 w-4" /></a>
+    </Reveal>
+  </div>
+</section>

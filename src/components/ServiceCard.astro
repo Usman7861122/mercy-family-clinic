@@ -1,0 +1,67 @@
+---
+import Icon from "./Icon.astro";
+import { unsplash, type Service } from "../lib/site";
+interface Props { service: Service; index: number }
+const { service, index } = Astro.props;
+---
+
+<article
+  id={service.slug}
+  class="flip h-[26rem] cursor-pointer select-none"
+  tabindex="0"
+  data-flip
+  aria-label={`${service.title}. Press Enter to read more.`}
+>
+  <div class="flip-inner">
+    <div class="flip-face bg-brand-900 shadow-xl shadow-brand-900/15">
+      <img
+        src={unsplash(service.image, 800, 1000)}
+        alt=""
+        loading="lazy"
+        width="800"
+        height="1000"
+        class="h-full w-full object-cover"
+      />
+      <div class="absolute inset-0 bg-gradient-to-b from-brand-950/85 via-brand-950/15 to-brand-950/50"></div>
+      <div class="absolute inset-x-0 top-0 flex items-start justify-between gap-4 p-7">
+        <div>
+          <span class="font-heading text-xs font-medium tracking-[0.25em] text-gold">{String(index + 1).padStart(2, "0")}</span>
+          <h3 class="mt-2 text-2xl font-semibold leading-tight !text-white">{service.title}</h3>
+        </div>
+        <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-cream/90 text-brand-700 shadow-lg">
+          <Icon name={service.icon} class="h-6 w-6" />
+        </span>
+      </div>
+      <span class="absolute bottom-6 right-6 flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur" aria-hidden="true">
+        <Icon name="flip" class="h-5 w-5" />
+      </span>
+    </div>
+
+    <div class="flip-face flip-back flex flex-col bg-brand-700 p-8 text-white shadow-xl shadow-brand-900/15">
+      <span class="flex h-14 w-14 items-center justify-center rounded-full bg-white/10 text-gold ring-1 ring-gold/50">
+        <Icon name={service.icon} class="h-7 w-7" />
+      </span>
+      <h3 class="mt-5 text-2xl font-semibold leading-tight !text-white">{service.title}</h3>
+      <div class="my-5 h-px w-12 bg-gold"></div>
+      <p class="text-brand-50">{service.excerpt}</p>
+      <a href={`/services/${service.slug}`} class="mt-auto inline-flex min-h-11 items-center gap-2 font-heading text-sm font-medium text-gold transition hover:text-white">
+        Learn more <Icon name="arrow" class="h-4 w-4" />
+      </a>
+    </div>
+  </div>
+</article>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-flip]").forEach((el) => {
+    el.addEventListener("click", (e) => {
+      if ((e.target as HTMLElement).closest("a")) return;
+      if (window.matchMedia("(hover: none)").matches) el.classList.toggle("is-flipped");
+    });
+    el.addEventListener("keydown", (e) => {
+      if ((e.key === "Enter" || e.key === " ") && e.target === el) {
+        e.preventDefault();
+        el.classList.toggle("is-flipped");
+      }
+    });
+  });
+</script>

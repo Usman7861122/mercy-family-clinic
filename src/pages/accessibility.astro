@@ -1,0 +1,105 @@
+---
+import LegalPage from "../components/LegalPage.astro";
+import Icon from "../components/Icon.astro";
+import { site, fullAddress } from "../lib/site";
+
+const toc = [
+  { id: "commitment", label: "Our promise" },
+  { id: "what-we-did", label: "What we have done" },
+  { id: "standard", label: "Where we are today" },
+  { id: "tips", label: "Tips for using the site" },
+  { id: "limits", label: "Known limits" },
+  { id: "feedback", label: "Tell us about a problem" },
+  { id: "other-ways", label: "Other ways to reach us" },
+];
+
+const features = [
+  "A \"Skip to content\" link at the top of every page",
+  "Menus and dropdowns that work with a keyboard (Tab, Enter and Escape)",
+  "A clear gold outline that shows where you are when you tab",
+  "Headings, landmarks and lists that screen readers can follow",
+  "Text alternatives for pictures that carry meaning, and decorative pictures hidden from screen readers",
+  "Text and button colors chosen for strong contrast",
+  "Large buttons and links that are easy to tap",
+  "Forms with real labels, clear error messages and no time limits",
+  "Motion that switches off, or becomes simple, when your device is set to \"reduce motion\"",
+  "Pages that adjust to any screen size and still work when you zoom in",
+];
+---
+
+<LegalPage
+  title="Accessibility Statement"
+  description="Our promise that everyone can use this website, what we have done, and how to tell us if something does not work for you."
+  updated="October 6, 2026"
+  toc={toc}
+>
+  <section id="commitment" data-reveal>
+    <h2>Our promise</h2>
+    <p>
+      At {site.name}, we believe good care is for everyone. We want every person, including people with disabilities, to be able to use
+      this website. We aim to meet the <strong>Web Content Accessibility Guidelines (WCAG) 2.2, Level AA</strong>, the widely used standard for accessible websites.
+    </p>
+  </section>
+
+  <section id="what-we-did" data-reveal>
+    <h2>What we have done</h2>
+    <p>This website was built with accessibility in mind. It includes:</p>
+    <ul>
+      {features.map((f) => <li>{f}</li>)}
+    </ul>
+    <p>The cookie banner can also be used fully with a keyboard and a screen reader.</p>
+  </section>
+
+  <section id="standard" data-reveal>
+    <h2>Where we are today</h2>
+    <p>
+      We believe this website meets most WCAG 2.2 Level AA requirements. We have checked it ourselves on desktop and phone screens,
+      but it has <strong>not yet been checked by an outside accessibility expert</strong>. We keep testing and improving it. This statement was last reviewed on October 6, 2026.
+    </p>
+  </section>
+
+  <section id="tips" data-reveal>
+    <h2>Tips for using the site</h2>
+    <ul>
+      <li><strong>Keyboard:</strong> press Tab to move forward, Shift + Tab to go back, Enter to open a link or button, and Escape to close a menu.</li>
+      <li><strong>Make text bigger:</strong> zoom in with Ctrl and + (Command and + on a Mac), or use your phone's text size setting.</li>
+      <li><strong>Less motion:</strong> turn on "Reduce motion" in your device settings. The site will calm its animations.</li>
+      <li><strong>Screen readers:</strong> use the headings list to jump between sections.</li>
+    </ul>
+  </section>
+
+  <section id="limits" data-reveal>
+    <h2>Known limits</h2>
+    <p>We are still working on a few things. Some parts are outside our full control:</p>
+    <ul>
+      <li>The <strong>Google map</strong> is made by Google, and we cannot change how accessible it is. Our address, phone number and a directions link are always shown as text, too.</li>
+      <li>Some <strong>blog articles</strong> may include pictures or content from other sources that are not fully described yet.</li>
+      <li>Some <strong>PDF or outside documents</strong>, if we link to them, may not be fully accessible.</li>
+    </ul>
+    <p>If you find something that is hard to use, please tell us. We want to fix it.</p>
+  </section>
+
+  <section id="feedback" data-reveal>
+    <h2>Tell us about a problem</h2>
+    <p>
+      If something on this website does not work for you, or you need information in another format, please contact us. Tell us the page
+      address, what went wrong, and the device or tool you use if you can. We will do our best to reply within two business days.
+    </p>
+    <ul>
+      <li>Phone: <a href={site.phoneHref}>{site.phone}</a> ({site.hours[0].days}, {site.hours[0].time})</li>
+      <li>Contact form: <a href="/contact">mercyfamilyclinic.com/contact</a></li>
+      <li>Mail: {site.name}, {fullAddress}</li>
+    </ul>
+  </section>
+
+  <section id="other-ways" data-reveal>
+    <h2>Other ways to reach us</h2>
+    <p>
+      You never need to use this website to get care. You can <a href={site.phoneHref}>call us</a> to book a visit, ask a question, or talk
+      about any help you need during your visit, such as a wheelchair-friendly entrance, an interpreter or extra time. Just let our team know.
+    </p>
+    <p>
+      <a href="/contact" class="btn btn-primary !no-underline !text-white"><Icon name="calendar" class="h-4 w-4" />Request Appointment</a>
+    </p>
+  </section>
+</LegalPage>

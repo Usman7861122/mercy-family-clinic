@@ -1,0 +1,38 @@
+---
+import Icon from "./Icon.astro";
+
+interface Crumb { label: string; href?: string }
+interface Props { crumbs: Crumb[] }
+const { crumbs } = Astro.props;
+
+// "Home" is always the first step
+const all: Crumb[] = [{ label: "Home", href: "/" }, ...crumbs];
+
+const origin = Astro.site ?? Astro.url;
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: all.map((c, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    name: c.label,
+    item: new URL(c.href ?? Astro.url.pathname, origin).href,
+  })),
+};
+---
+
+<nav aria-label="Breadcrumb" class="text-sm text-brand-200">
+  <ol class="flex flex-wrap items-center gap-2">
+    {all.map((c, i) => (
+      <li class="flex items-center gap-2">
+        {i > 0 && <Icon name="chevron" class="h-3.5 w-3.5 -rotate-90 opacity-60" />}
+        {c.href && i < all.length - 1 ? (
+          <a href={c.href} class="transition hover:text-white">{c.label}</a>
+        ) : (
+          <span class="text-white" aria-current="page">{c.label}</span>
+        )}
+      </li>
+    ))}
+  </ol>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+</nav>

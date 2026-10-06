@@ -1,0 +1,15 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Doctor from "../../components/sections/Doctor.astro";
+import Testimonials from "../../components/sections/Testimonials.astro";
+import ParallaxCta from "../../components/sections/ParallaxCta.astro";
+---
+
+<BaseLayout
+  title="Meet Dr. Izzy | Mercy Family Clinic"
+  description="Meet Dr. Ebere Israel Azubuike (Dr. Izzy), medical director of Mercy Family Clinic in Dallas, TX."
+>
+  <Doctor page />
+  <Testimonials limit={3} />
+  <ParallaxCta />
+</BaseLayout>

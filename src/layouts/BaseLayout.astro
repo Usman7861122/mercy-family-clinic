@@ -1,0 +1,96 @@
+---
+import "@fontsource/poppins/500.css";
+import "@fontsource/poppins/600.css";
+import "@fontsource-variable/inter";
+import "../styles/global.css";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import CookieConsent from "../components/CookieConsent.astro";
+import Icon from "../components/Icon.astro";
+import { site, fullAddress } from "../lib/site";
+
+interface Props {
+  title?: string;
+  description?: string;
+  solidHeader?: boolean;
+}
+
+const clinicSchema = {
+  "@context": "https://schema.org",
+  "@type": "MedicalClinic",
+  name: site.name,
+  description: site.description,
+  telephone: "+1-214-942-2377",
+  faxNumber: "+1-214-484-5034",
+  url: Astro.site?.href,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: site.address.street,
+    addressLocality: site.address.city,
+    addressRegion: site.address.state,
+    postalCode: site.address.zip,
+    addressCountry: "US",
+  },
+  openingHoursSpecification: [
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      opens: "09:00",
+      closes: "17:00",
+    },
+  ],
+  employee: { "@type": "Physician", name: "Ebere Israel Azubuike, MD" },
+};
+
+const {
+  title = `${site.name} | Family Medicine & Medical Weight Loss in Dallas, TX`,
+  description = site.description,
+  solidHeader = false,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#082625" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="201x201" href="/images/icon-teal.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
+    <title>{title}</title>
+    <script is:inline>document.documentElement.classList.add("js");</script>
+    <script type="application/ld+json" set:html={JSON.stringify(clinicSchema)} />
+  </head>
+  <body>
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-white focus:px-5 focus:py-3 focus:text-brand-900"
+      >Skip to content</a
+    >
+    <div id="scroll-progress" aria-hidden="true"></div>
+    <Header solid={solidHeader} />
+    <main id="main" tabindex="-1" class="outline-none">
+      <slot />
+    </main>
+    <Footer />
+    <button
+      type="button"
+      id="to-top"
+      aria-label="Back to top"
+      class="flex h-12 w-12 items-center justify-center rounded-full bg-brand-700 text-white shadow-lg shadow-brand-950/25 hover:bg-brand-800"
+    >
+      <Icon name="arrow-up" class="h-5 w-5" />
+    </button>
+    <CookieConsent />
+    <script>
+      import "../scripts/motion.ts";
+    </script>
+  </body>
+</html>

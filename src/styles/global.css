@@ -1,0 +1,301 @@
+@import "tailwindcss";
+
+@theme {
+  --font-heading: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* Calm teal */
+  --color-brand-50: #effaf8;
+  --color-brand-100: #d5f2ee;
+  --color-brand-200: #aee5de;
+  --color-brand-300: #7bd0c7;
+  --color-brand-400: #47b5ab;
+  --color-brand-500: #25978f;
+  --color-brand-600: #1b7a75;
+  --color-brand-700: #186360;
+  --color-brand-800: #164f4d;
+  --color-brand-900: #123f3e;
+  --color-brand-950: #082625;
+
+  /* Warm cream + gold */
+  --color-cream: #faf6ef;
+  --color-sand: #f1e9dc;
+  --color-gold: #d4a964;
+  --color-ink: #12302d;
+  --color-muted: #4a5f5c;
+
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+  }
+  body {
+    overflow-x: clip;
+    @apply bg-cream font-sans text-ink antialiased;
+    font-size: 1.0625rem;
+    line-height: 1.7;
+  }
+  h1, h2, h3, h4 {
+    @apply font-heading text-brand-950;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-gold);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10;
+  }
+  .section-pad {
+    @apply py-20 sm:py-28;
+  }
+  .eyebrow {
+    @apply font-heading text-xs font-medium uppercase tracking-[0.22em] text-brand-600;
+  }
+  .h2 {
+    @apply font-heading text-3xl font-semibold sm:text-4xl lg:text-[2.75rem];
+  }
+  .btn {
+    @apply inline-flex min-h-12 items-center justify-center gap-2 whitespace-nowrap rounded-full px-7 font-heading text-sm font-medium transition duration-300 active:scale-[0.97];
+  }
+  .btn-primary {
+    @apply bg-brand-700 text-white shadow-lg shadow-brand-900/15 hover:bg-brand-800;
+  }
+  .btn-light {
+    @apply bg-cream text-brand-900 hover:bg-white;
+  }
+  .btn-ghost-light {
+    @apply border border-white/60 text-white hover:bg-white/10;
+  }
+  .btn-ghost {
+    @apply border border-brand-700/40 text-brand-800 hover:bg-brand-700/5;
+  }
+}
+
+/* Fixed-window parallax (falls back to normal scroll on touch + reduced motion) */
+.parallax-window {
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+@media (hover: none), (max-width: 1024px), (prefers-reduced-motion: reduce) {
+  .parallax-window {
+    background-attachment: scroll;
+  }
+}
+
+/* Service flip cards */
+.flip {
+  perspective: 1400px;
+}
+.flip-inner {
+  position: relative;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.8s var(--ease-soft);
+}
+.flip:hover .flip-inner,
+.flip:focus-visible .flip-inner,
+.flip:has(:focus-visible) .flip-inner,
+.flip.is-flipped .flip-inner {
+  transform: rotateY(180deg);
+}
+.flip-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 1.5rem;
+  overflow: hidden;
+}
+.flip-back {
+  transform: rotateY(180deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .flip-inner { transform-style: flat; transition: none; }
+  .flip-face { backface-visibility: visible; transition: opacity 0.3s; }
+  .flip-back { transform: none; opacity: 0; }
+  .flip:hover .flip-inner,
+  .flip:focus-visible .flip-inner,
+  .flip:has(:focus-visible) .flip-inner,
+  .flip.is-flipped .flip-inner { transform: none; }
+  .flip:hover .flip-back,
+  .flip:focus-visible .flip-back,
+  .flip:has(:focus-visible) .flip-back,
+  .flip.is-flipped .flip-back { opacity: 1; }
+}
+
+/* Hero entrance (CSS only, no JS) */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes slow-zoom {
+  from { transform: scale(1.08); }
+  to { transform: scale(1); }
+}
+.rise { animation: rise 1s var(--ease-soft) both; }
+.slow-zoom { animation: slow-zoom 2.4s var(--ease-soft) both; }
+@media (prefers-reduced-motion: reduce) {
+  .rise, .slow-zoom { animation: none; }
+}
+
+/* ======================================================================
+   Scroll reveal (driven by src/scripts/motion.ts)
+   Content stays visible if JavaScript is off: the hidden state only
+   applies after the page adds the "js" class to <html>.
+   ====================================================================== */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+  transition: opacity 0.9s var(--ease-soft), transform 0.9s var(--ease-soft);
+  transition-delay: var(--d, 0ms);
+  will-change: opacity, transform;
+}
+.js [data-reveal="left"] { transform: translate3d(-40px, 0, 0); }
+.js [data-reveal="right"] { transform: translate3d(40px, 0, 0); }
+.js [data-reveal="zoom"] { transform: scale(0.94); }
+.js [data-reveal="fade"] { transform: none; }
+.js [data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+  will-change: auto;
+}
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal] { opacity: 1; transform: none; transition: none; }
+}
+
+/* Reading progress bar + back-to-top */
+#scroll-progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 70;
+  height: 3px;
+  transform-origin: left;
+  transform: scaleX(0);
+  background: linear-gradient(90deg, var(--color-gold), var(--color-brand-400));
+  pointer-events: none;
+}
+#to-top {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 60;
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity 0.4s var(--ease-soft), transform 0.4s var(--ease-soft), background-color 0.3s;
+}
+#to-top.is-visible { opacity: 1; transform: none; pointer-events: auto; }
+@media (prefers-reduced-motion: reduce) {
+  #to-top { transition: opacity 0.2s; transform: none; }
+}
+
+/* ======================================================================
+   Hover effects (only on devices that really hover)
+   ====================================================================== */
+.lift,
+.icon-pop,
+.link-slide,
+.hover-shift {
+  transition: transform 0.5s var(--ease-soft), box-shadow 0.5s var(--ease-soft), background-color 0.3s, color 0.3s;
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  /* cards rise and glow */
+  .lift:hover { transform: translateY(-8px); box-shadow: 0 32px 60px -30px rgb(18 63 62 / 0.45); }
+  /* icon badges pop and tilt when their card is hovered */
+  .hover-pop:hover .icon-pop,
+  .lift:hover .icon-pop { transform: scale(1.14) rotate(-8deg); }
+  /* list rows slide a little */
+  .hover-shift:hover { transform: translateX(6px); }
+  /* footer links */
+  .link-slide:hover { transform: translateX(5px); }
+  /* flip cards float up while they turn */
+  .flip { transition: transform 0.5s var(--ease-soft); }
+  .flip:hover { transform: translateY(-6px); }
+  /* primary button: lift */
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 16px 30px -12px rgb(18 63 62 / 0.55); }
+  .btn:hover > svg:last-child:not(:first-child) { transform: translateX(4px); }
+  /* underline that draws in */
+  .link-draw:hover { background-size: 100% 2px; }
+}
+.btn > svg { transition: transform 0.4s var(--ease-soft); }
+.btn { position: relative; overflow: hidden; isolation: isolate; }
+.btn-primary::after,
+.btn-light::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.28) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 0.9s var(--ease-soft);
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .btn-primary:hover::after,
+  .btn-light:hover::after { transform: translateX(120%); }
+}
+.link-draw {
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 2px no-repeat;
+  transition: background-size 0.45s var(--ease-soft);
+}
+
+/* ======================================================================
+   Legal pages: readable long text
+   ====================================================================== */
+.legal h2 {
+  margin-top: 3rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  scroll-margin-top: 7rem;
+}
+.legal h2:first-child { margin-top: 0; }
+.legal h3 { margin-top: 1.75rem; font-size: 1.1rem; font-weight: 600; }
+.legal p, .legal li { color: var(--color-muted); }
+.legal p { margin-top: 1rem; }
+.legal ul { margin-top: 1rem; list-style: none; display: grid; gap: 0.6rem; }
+.legal ul > li { position: relative; padding-left: 1.6rem; }
+.legal ul > li::before {
+  content: "";
+  position: absolute;
+  left: 0.2rem;
+  top: 0.7em;
+  height: 0.5rem;
+  width: 0.5rem;
+  border-radius: 999px;
+  background: var(--color-gold);
+}
+.legal a:not(.btn) {
+  color: var(--color-brand-700);
+  text-decoration: underline;
+  text-decoration-color: var(--color-gold);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+.legal a:not(.btn):hover { color: var(--color-brand-900); }
+.legal strong { color: var(--color-ink); font-weight: 600; }
+.legal table { margin-top: 1.25rem; width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+.legal th, .legal td { padding: 0.8rem 1rem; text-align: left; vertical-align: top; border-bottom: 1px solid rgb(18 63 62 / 0.12); }
+.legal th { font-family: var(--font-heading); font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--color-brand-700); }
+.legal td { color: var(--color-muted); }
+.legal td:first-child { color: var(--color-ink); font-weight: 500; white-space: nowrap; }
+@media (max-width: 640px) {
+  .legal table, .legal tbody, .legal tr, .legal td { display: block; }
+  .legal thead { display: none; }
+  .legal tr { padding: 0.9rem 0; border-bottom: 1px solid rgb(18 63 62 / 0.12); }
+  .legal td { border: 0; padding: 0.15rem 0; }
+  .legal td:first-child { white-space: normal; }
+}
+.legal > section + section { margin-top: 3rem; }
