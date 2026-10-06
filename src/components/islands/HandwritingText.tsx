@@ -72,12 +72,12 @@ function loadFont(url: string): Promise<any> {
 
 const EM = 100; // arbitrary: the viewBox normalises whatever we pick
 
-const FADE_MS = 1400;
+const FADE_MS = 900;
 
 export default function HandwritingText({
   text,
   words,
-  interval = 6000,
+  interval = 4400,
   fontUrl = DEFAULT_FONT_URL,
   duration = 1.5,
   delay = 0.05,
@@ -119,7 +119,7 @@ export default function HandwritingText({
           setIndex((i) => i + 1);
           run();
         }, FADE_MS);
-      }, hold + (firstRun.current ? 1500 : 0));
+      }, hold + (firstRun.current ? 800 : 0));
       firstRun.current = false;
     };
     run();
@@ -187,6 +187,8 @@ export default function HandwritingText({
   }
 
   const count = Math.max(1, geom.contours.length);
+  // The start delay is only for the very first word; later words begin right away.
+  const lead = index === 0 ? delay : 0.05;
 
   return (
     <svg
@@ -211,7 +213,7 @@ export default function HandwritingText({
           style={{
             opacity: drawn ? 1 : 0,
             transition: drawn
-              ? `opacity 0.45s ease-out ${(delay + duration * 0.72).toFixed(3)}s`
+              ? `opacity 0.45s ease-out ${(lead + duration * 0.72).toFixed(3)}s`
               : "none",
           }}
         />
@@ -220,7 +222,7 @@ export default function HandwritingText({
         const length = lengths[i] || 0;
         // Contours overlap slightly so the stroke reads as one continuous movement.
         const each = (duration / count) * 2.4;
-        const start = delay + (i / count) * duration;
+        const start = lead + (i / count) * duration;
         return (
           <path
             key={i}
