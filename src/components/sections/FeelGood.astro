@@ -1,6 +1,7 @@
 ---
 import Reveal from "../islands/Reveal";
 import Icon from "../Icon.astro";
+import HandwritingText from "../islands/HandwritingText";
 import { weightLossImage } from "../../lib/site";
 
 const perks = [
@@ -34,7 +35,17 @@ const perks = [
 
     <Reveal client:visible delay={0.1}>
       <p class="eyebrow">Feel your best</p>
-      <h2 class="h2 mt-4">When you look good, <span class="text-brand-600">you feel good.</span></h2>
+      <h2 class="h2 mt-4">
+        When you look good,
+        <span class="block text-brand-600">
+          <HandwritingText
+            client:visible
+            words={["you feel good.", "you feel strong.", "you feel confident."]}
+            height="2.15em"
+            className="text-brand-600"
+          />
+        </span>
+      </h2>
       <p class="mt-6 max-w-lg text-lg text-muted">
         Confidence starts with feeling well. Our medically supervised weight loss program builds a plan around your body and your life.
       </p>
