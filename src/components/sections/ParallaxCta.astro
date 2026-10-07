@@ -1,21 +1,21 @@
 ---
 import Reveal from "../islands/Reveal";
 import Icon from "../Icon.astro";
-import { images, unsplash } from "../../lib/site";
 import { contactHref } from "../../lib/links";
 const cta = contactHref(Astro.url);
 ---
 
 <section
-  class="parallax-window relative isolate flex min-h-[85vh] items-center justify-center px-5 py-24"
-  style={`background-image: url(${unsplash(images.parallax, 2400)})`}
+  class="parallax-window cta-photo relative isolate flex min-h-[85vh] items-end px-5 py-16 sm:items-center sm:py-24"
+  style="background-image: url(/images/family.jpg)"
   role="img"
-  aria-label="Green hills under soft morning clouds"
+  aria-label="A smiling family of three looking at a laptop together"
 >
-  <div class="absolute inset-0 -z-10 bg-brand-950/30"></div>
+  <!-- The soft white area on the left of the photo holds the text. -->
+  <div class="mx-auto w-full max-w-6xl sm:px-6 lg:px-10">
   <Reveal client:visible className="w-full max-w-md">
-    <div class="rounded-3xl border border-white/25 bg-brand-950/55 p-8 text-center backdrop-blur-md sm:p-10">
-      <span class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-white/10 text-gold ring-1 ring-gold/50"><Icon name="calendar" class="h-7 w-7" /></span>
+    <div class="rounded-3xl border border-white/25 bg-brand-950/80 p-8 text-left shadow-2xl shadow-brand-950/20 backdrop-blur-md sm:p-10">
+      <span class="flex h-14 w-14 items-center justify-center rounded-full bg-white/10 text-gold ring-1 ring-gold/50"><Icon name="calendar" class="h-7 w-7" /></span>
       <p class="eyebrow mt-5 !text-gold">Ready when you are</p>
       <h2 class="mt-4 text-2xl font-semibold !text-white sm:text-3xl">Take the first step today.</h2>
       <p class="mt-4 text-sm text-white/85">
@@ -24,4 +24,5 @@ const cta = contactHref(Astro.url);
       <a href={cta} class="btn btn-light mt-7"><Icon name="calendar" class="h-4 w-4" />Request Appointment</a>
     </div>
   </Reveal>
+  </div>
 </section>

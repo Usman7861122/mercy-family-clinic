@@ -95,6 +95,27 @@
   }
 }
 
+/* Family photo: keep the people on the right in view when the screen is narrow */
+.cta-photo {
+  background-position: 78% center;
+  background-color: #f6efe6;
+}
+@media (min-width: 1024px) {
+  .cta-photo {
+    background-position: center;
+  }
+}
+/* On phones the photo sits on top and the card below it, so no faces are covered. */
+@media (max-width: 639px) {
+  .cta-photo {
+    background-repeat: no-repeat;
+    background-size: auto 54svh;
+    background-position: 86% top;
+    min-height: 100svh;
+    padding-top: calc(54svh - 3rem);
+  }
+}
+
 /* Service flip cards */
 .flip {
   perspective: 1400px;

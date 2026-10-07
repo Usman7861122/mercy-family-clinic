@@ -29,12 +29,18 @@ export default function Timeline({ items, image, imageAlt, badge, children }: Pr
   const sectionRef = useRef<HTMLElement>(null);
   const pinRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const slotRef = useRef<HTMLElement>(null);
+  const introRef = useRef<HTMLDivElement>(null);
+  const shiftRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const section = sectionRef.current;
     const pin = pinRef.current;
     const track = trackRef.current;
-    if (!section || !pin || !track) return;
+    const slot = slotRef.current;
+    const intro = introRef.current;
+    const shift = shiftRef.current;
+    if (!section || !pin || !track || !slot || !intro || !shift) return;
 
     gsap.registerPlugin(ScrollTrigger, SplitText);
     ScrollTrigger.config({ ignoreMobileResize: true });
@@ -49,6 +55,7 @@ export default function Timeline({ items, image, imageAlt, badge, children }: Pr
     const teardown = () => {
       ctx?.revert();
       ctx = undefined;
+      gsap.set([track, shift], { clearProps: "transform" });
       splits.forEach((s) => s.revert());
       splits = [];
     };
@@ -70,8 +77,13 @@ export default function Timeline({ items, image, imageAlt, badge, children }: Pr
       const maxScroll = Math.max(0, track.offsetWidth - vw);
       if (maxScroll === 0) return;
 
+      // On wide screens the text and photo start together in the middle of the screen.
+      // A short first stretch of scrolling moves them to the left; then the row slides sideways.
+      const wide = window.matchMedia("(min-width: 1024px)").matches;
+      const preroll = wide ? Math.round(vh * 0.6) : 0;
+
       // A little extra scroll makes the slide feel calm, not rushed.
-      section.style.height = `${Math.round(maxScroll * 1.12 + vh)}px`;
+      section.style.height = `${Math.round(maxScroll * 1.12 + vh + preroll)}px`;
 
       const lineEl = track.querySelector<HTMLElement>("[data-line]");
       const tipEl = track.querySelector<HTMLElement>("[data-tip]");
@@ -103,12 +115,37 @@ export default function Timeline({ items, image, imageAlt, badge, children }: Pr
           if (tipEl) gsap.set(tipEl, { x: s * tlWidth, opacity: s > 0.002 && s < 0.999 ? 1 : 0 });
         };
 
+        if (wide) {
+          // Centre the intro + photo pair, using where they sit at x = 0.
+          const a = intro.getBoundingClientRect();
+          const b = slot.getBoundingClientRect();
+          const x0 = Math.max(0, (vw - (b.right - a.left)) / 2 - a.left);
+          gsap.fromTo(
+            shift,
+            { x: x0 },
+            {
+              x: 0,
+              ease: "power2.inOut",
+              scrollTrigger: {
+                trigger: section,
+                start: "top top",
+                end: `top+=${preroll} top`,
+                scrub: true,
+                invalidateOnRefresh: true,
+              },
+              onUpdate(this: gsap.core.Tween) {
+                if (hintEl) hintEl.style.opacity = String(Math.max(0, 1 - this.progress() * 5));
+              },
+            },
+          );
+        }
+
         const slide = gsap.to(track, {
           x: -maxScroll,
           ease: "none",
           scrollTrigger: {
             trigger: section,
-            start: "top top",
+            start: `top+=${preroll} top`,
             end: "bottom bottom",
             scrub: true,
             invalidateOnRefresh: true,
@@ -117,7 +154,7 @@ export default function Timeline({ items, image, imageAlt, badge, children }: Pr
             const p = this.progress();
             updateLine(p);
             if (barEl) gsap.set(barEl, { scaleX: p });
-            if (hintEl) hintEl.style.opacity = String(Math.max(0, 1 - p * 18));
+            if (!wide && hintEl) hintEl.style.opacity = String(Math.max(0, 1 - p * 18));
           },
         });
         updateLine(0);
@@ -131,9 +168,9 @@ export default function Timeline({ items, image, imageAlt, badge, children }: Pr
           if (!stem || !dot || !label || !title || !text) return;
 
           const fromTop = el.dataset.side === "top";
-          const startPct = Math.min(80, pct(geo[i]));
+          const startPct = Math.min(94, pct(geo[i]));
           const finalPct = pct(geo[i] - maxScroll);
-          const endPct = Math.max(finalPct, 42);
+          const endPct = Math.max(finalPct, 52);
 
           const sTitle = new SplitText(title, { type: "lines", mask: "lines" });
           const sText = new SplitText(text, { type: "lines", mask: "lines" });
@@ -203,15 +240,19 @@ export default function Timeline({ items, image, imageAlt, badge, children }: Pr
         role="group"
         className="group sticky top-0 h-svh overflow-hidden data-[static=true]:static data-[static=true]:h-auto data-[static=true]:overflow-x-auto data-[static=true]:py-10"
       >
+        <div ref={shiftRef} className="h-full w-max group-data-[static=true]:h-auto">
         <div
           ref={trackRef}
           className="flex h-full w-max items-center gap-12 pl-6 pr-[8vw] pt-20 will-change-transform sm:gap-20 sm:pl-[8vw] group-data-[static=true]:h-auto group-data-[static=true]:pt-0"
         >
           {/* 1. Intro copy from Astro */}
-          <div className="w-[min(86vw,32rem)] shrink-0">{children}</div>
+          <div ref={introRef} className="w-[min(86vw,32rem)] shrink-0">{children}</div>
 
           {/* 2. Photo */}
-          <figure className="relative h-[min(30rem,56svh)] w-[min(20rem,62vw)] shrink-0">
+          <figure
+            ref={slotRef}
+            className="relative h-[min(30rem,56svh)] w-[min(20rem,62vw)] shrink-0"
+          >
             <img
               src={image}
               alt={imageAlt}
@@ -294,6 +335,7 @@ export default function Timeline({ items, image, imageAlt, badge, children }: Pr
               })}
             </ol>
           </div>
+        </div>
         </div>
 
         {/* progress + hint */}

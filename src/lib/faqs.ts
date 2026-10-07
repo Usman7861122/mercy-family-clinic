@@ -69,7 +69,7 @@ export const faqs: Record<string, Faq[]> = {
     },
     {
       q: "What shots does my child need?",
-      a: "Dr. Izzy follows CDC guidelines for each age. Some vaccines need more than one dose. Please bring your child's immunization records to the first visit.",
+      a: "Dr. Izzy follows CDC guidelines for each age. Some vaccines need more than one dose. Please bring your child's health records to the first visit.",
     },
     {
       q: "When should I see the doctor right away?",
@@ -151,25 +151,6 @@ export const faqs: Record<string, Faq[]> = {
     {
       q: "How should I get ready?",
       a: "Be ready to talk about your exercise, nutrition and substance use.",
-    },
-    howToStart,
-  ],
-  immunizations: [
-    {
-      q: "What are immunizations?",
-      a: "An immunization gives your body a weakened or inactive form of a germ, so it learns to make antibodies without making you sick.",
-    },
-    {
-      q: "Why are they important?",
-      a: "They stop the spread of preventable diseases and keep the community healthy. Diseases like polio and measles are now very rare because of vaccines.",
-    },
-    {
-      q: "Which shots does my child need?",
-      a: "Daycares and schools often require certain vaccines. The CDC publishes age-based schedules, and we help you choose the right shots. Some need more than one dose as your child's immune system grows.",
-    },
-    {
-      q: "Do adults need shots?",
-      a: "Yes. Adults should get a flu shot every year. If you travel abroad, you may need other vaccines for diseases that are rare here but a risk in other countries.",
     },
     howToStart,
   ],

@@ -13,7 +13,6 @@ const reasons = [
   "Diabetes Management",
   "Women's Health",
   "Physical Exam",
-  "Immunizations",
   "Hypertension",
   "Something else",
 ];

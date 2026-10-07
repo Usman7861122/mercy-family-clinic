@@ -72,7 +72,6 @@ const menuOrder = [
   "family-medicine",
   "diabetes",
   "physical-exams",
-  "immunizations",
   "hypertension",
   "pediatrics",
   "in-office-diagnostic-testing",

@@ -132,7 +132,7 @@ export const services: Service[] = [
       {
         heading: "What shots does my child need?",
         paragraphs: [
-          "Dr. Izzy follows CDC guidelines for each age. Some vaccines need more than one dose. Please bring your child's immunization records to the first visit.",
+          "Dr. Izzy follows CDC guidelines for each age. Some vaccines need more than one dose. Please bring your child's health records to the first visit.",
         ],
       },
       {
@@ -266,42 +266,6 @@ export const services: Service[] = [
         ],
         after: [
           "Some exams also include checks for men (testicular, prostate or hernia) or for women (Pap test, pelvic exam or breast exam).",
-        ],
-      },
-    ],
-  },
-  {
-    slug: "immunizations",
-    title: "Immunizations",
-    icon: "syringe",
-    image: "1576091160399-112ba8d25d1d",
-    excerpt:
-      "Keep every member of your family up to date with the vaccines they need.",
-    intro:
-      "We protect patients and families from diseases that can be prevented.",
-    sections: [
-      {
-        heading: "What are immunizations?",
-        paragraphs: [
-          "An immunization gives your body a weakened or inactive form of a germ, so it learns to make antibodies without making you sick. Babies especially benefit from early shots, because they have not built up antibodies yet.",
-        ],
-      },
-      {
-        heading: "Why are they important?",
-        paragraphs: [
-          "Immunizations stop the spread of preventable diseases and keep the community healthy. Diseases like polio and measles are now very rare because of vaccines.",
-        ],
-      },
-      {
-        heading: "Which shots does my child need?",
-        paragraphs: [
-          "Daycares and schools often require certain vaccines. The CDC publishes age-based schedules, and we help you choose the right shots. Some need more than one dose as your child's immune system grows.",
-        ],
-      },
-      {
-        heading: "Do adults need shots?",
-        paragraphs: [
-          "Adults should get a flu shot every year. If you travel abroad, you may need other vaccines for diseases that are rare here but a risk in other countries.",
         ],
       },
     ],
