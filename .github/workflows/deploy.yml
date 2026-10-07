@@ -1,0 +1,71 @@
+# Builds the site and copies it to an S3 bucket every time main changes.
+# Set these in GitHub: Settings > Secrets and variables > Actions
+#   Secrets:   AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+#   Variables: AWS_REGION (for example us-east-1), S3_BUCKET (the bucket name)
+#   Optional variable: PUBLIC_FORM_ENDPOINT (the contact form address)
+name: Deploy to S3
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+# Never run two deploys at the same time
+concurrency:
+  group: deploy-s3
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Build
+        env:
+          PUBLIC_FORM_ENDPOINT: ${{ vars.PUBLIC_FORM_ENDPOINT }}
+        run: npm run build
+
+      - name: Check the build has pages
+        run: test -f dist/index.html
+
+      - name: Sign in to AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      # Files in /_astro have a new name whenever they change, so browsers can keep them for a year.
+      - name: Upload fingerprinted files
+        run: |
+          aws s3 sync dist "s3://${{ vars.S3_BUCKET }}" --delete \
+            --exclude "*" --include "_astro/*" \
+            --cache-control "public,max-age=31536000,immutable"
+
+      # Pages: always check for a new version.
+      - name: Upload pages
+        run: |
+          aws s3 sync dist "s3://${{ vars.S3_BUCKET }}" --delete \
+            --exclude "*" --include "*.html" \
+            --cache-control "public,max-age=0,must-revalidate" \
+            --content-type "text/html; charset=utf-8"
+
+      # Everything else (images, fonts, icons, sitemap): keep for one day.
+      - name: Upload other files
+        run: |
+          aws s3 sync dist "s3://${{ vars.S3_BUCKET }}" --delete \
+            --exclude "_astro/*" --exclude "*.html" \
+            --cache-control "public,max-age=86400"
