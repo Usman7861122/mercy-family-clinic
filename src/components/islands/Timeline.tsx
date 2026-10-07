@@ -51,8 +51,11 @@ export default function Timeline({ items, image, imageAlt, badge, children }: Pr
     let lastWidth = window.innerWidth;
     let timer: number | undefined;
     let disposed = false;
+    let unlisten: (() => void) | undefined;
 
     const teardown = () => {
+      unlisten?.();
+      unlisten = undefined;
       ctx?.revert();
       ctx = undefined;
       gsap.set([track, shift], { clearProps: "transform" });
@@ -120,24 +123,29 @@ export default function Timeline({ items, image, imageAlt, badge, children }: Pr
           const a = intro.getBoundingClientRect();
           const b = slot.getBoundingClientRect();
           const x0 = Math.max(0, (vw - (b.right - a.left)) / 2 - a.left);
-          gsap.fromTo(
-            shift,
-            { x: x0 },
-            {
-              x: 0,
-              ease: "power2.inOut",
-              scrollTrigger: {
-                trigger: section,
-                start: "top top",
-                end: `top+=${preroll} top`,
-                scrub: true,
-                invalidateOnRefresh: true,
-              },
-              onUpdate(this: gsap.core.Tween) {
-                if (hintEl) hintEl.style.opacity = String(Math.max(0, 1 - this.progress() * 5));
-              },
-            },
-          );
+          const ease = gsap.parseEase("power2.inOut");
+          const apply = (p: number) => {
+            gsap.set(shift, { x: x0 * (1 - ease(p)) });
+            if (hintEl) hintEl.style.opacity = String(Math.max(0, 1 - p * 5));
+          };
+          apply(0);
+          const intro1 = ScrollTrigger.create({
+            trigger: section,
+            start: "top top",
+            end: `top+=${preroll} top`,
+            scrub: true,
+            onUpdate: (self) => apply(self.progress),
+          });
+          // While ScrollTrigger measures the items, the row must sit at its true spot,
+          // not shifted to the middle. Otherwise every reveal ends too late.
+          const park = () => gsap.set(shift, { x: 0 });
+          const restore = () => apply(intro1.progress);
+          ScrollTrigger.addEventListener("refreshInit", park);
+          ScrollTrigger.addEventListener("refresh", restore);
+          unlisten = () => {
+            ScrollTrigger.removeEventListener("refreshInit", park);
+            ScrollTrigger.removeEventListener("refresh", restore);
+          };
         }
 
         const slide = gsap.to(track, {
